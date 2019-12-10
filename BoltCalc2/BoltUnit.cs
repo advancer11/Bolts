@@ -163,7 +163,16 @@ namespace BoltCalc2
                 OnPropertyChanged("BoltLength");
             }
         }
-
+        private bool over_2_det;
+        public bool Over2Det
+        {
+            get { return over_2_det; }
+            set
+            {
+                over_2_det = value;
+                OnPropertyChanged("Over2Det");
+            }
+        }
 
 
         //Свойства
@@ -178,7 +187,6 @@ namespace BoltCalc2
                 if(MyCalculation != null) MyCalculation.GammaC = selected_item_gamma_c.Value;
             }
         }
-        public bool Over2Det { get; set; }
 
 
         //Конструктор

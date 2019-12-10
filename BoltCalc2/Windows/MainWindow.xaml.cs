@@ -288,23 +288,5 @@ namespace BoltCalc2
             tb_ext.Visibility = Visibility.Collapsed;
             tbx_ext.Visibility = Visibility.Collapsed;
         }
-
-
-
-        //Скрыть поле если нет гровер-шайбы
-        /*
-        private void TextBox_TextChanged_grover(object sender, TextChangedEventArgs e)
-        {
-            TextBox tbx = (TextBox)sender;
-            if (tbx.Text == "0")
-            {
-                tbx.Visibility = tb_grover.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                tbx.Visibility = tb_grover.Visibility = Visibility.Visible;
-            }
-        }
-        */
     }
 }
