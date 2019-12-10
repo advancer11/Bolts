@@ -284,7 +284,7 @@
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" Margin="2,2,4,2" Click="Button_Click_UpLength">
-                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center">Увеличить длину болта</TextBlock>
+                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center">ПРоверить GIT</TextBlock>
                             </Button>
                             <Button Grid.Column="1" Margin="4,2,2,2" Click="Button_Click_DownLength">
                                 <TextBlock TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center">Уменьшить длину болта</TextBlock>
