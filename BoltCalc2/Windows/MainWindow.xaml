@@ -1,0 +1,421 @@
+﻿<Window x:Class="BoltCalc2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BoltCalc2"
+        mc:Ignorable="d"
+        Title="Bolt Calculation" Height="750" Width="1250" Background="#F0F0F0" UseLayoutRounding="True" SizeChanged="Window_SizeChanged">
+    <Grid Margin="3">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition MinHeight="150"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="Файл">
+            </MenuItem>
+            <MenuItem Header="Инструменты">
+                <MenuItem Header="Открыть базу данных для расчета" Click="Menu_Click_OpenBase"></MenuItem>
+                <MenuItem Header="Открыть базу ГОСТов на метизы" Click="Menu_Click_OpenGost"></MenuItem>
+                <MenuItem Header="Показать расчет выбранного узла"></MenuItem>
+                <MenuItem Header="Информация о метизе выбранного узла"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <ListView Grid.Row="1" Margin="3,10,3,3" ItemsSource="{Binding UnitList}" SelectedItem="{Binding SelectedUnit}" SelectionMode="Single" SelectionChanged="ListView_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="40">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">№ узла</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Number}" FontWeight="Bold"></TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="140" x:Name="col_connectionType">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Тип соединения</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_connectionType, Path=Width}">
+                                    <ComboBox Margin="0,0,12,0" ItemsSource="{Binding ConnectionTypes}" SelectedItem="{Binding SelectedConnectionType}" DisplayMemberPath="Name" PreviewMouseDown="ComboBox_PreviewMouseDown"></ComboBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="70" x:Name="col_diameter">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Диаметр болта</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_diameter, Path=Width}">
+                                    <ComboBox Margin="0,0,12,0" ItemsSource="{Binding BoltList}" SelectedItem="{Binding SelectedBolt}" DisplayMemberPath="Name" PreviewMouseDown="ComboBox_PreviewMouseDown"></ComboBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="70" x:Name="col_bolt_quantity">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Количество болтов</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_bolt_quantity, Path=Width}">
+                                    <TextBox Margin="0,0,12,0" TextAlignment="Center" Text="{Binding BoltQuantity}" KeyDown="TextBox_KeyDown" PreviewMouseDown="TextBox_PreviewMouseDown"></TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100" x:Name="col_strength_class">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Класс прочности болтов</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_strength_class, Path=Width}">
+                                    <ComboBox Margin="0,0,12,0" ItemsSource="{Binding StrengthClassList}" SelectedItem="{Binding SelectedStrengthClass}" DisplayMemberPath="Name" PreviewMouseDown="ComboBox_PreviewMouseDown"></ComboBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="60" x:Name="col_force">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Нагрузка, кН</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_force, Path=Width}">
+                                    <TextBox Margin="0,0,12,0" TextAlignment="Center" KeyDown="TextBox_KeyDown" Text="{Binding Force}" PreviewMouseDown="TextBox_PreviewMouseDown"></TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="60" x:Name="col_util_rate">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Коэфф-т использ.</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_util_rate, Path=Width}">
+                                    <TextBox Margin="0,0,12,0" TextAlignment="Center" Text="{Binding UtilRate}" IsReadOnly="True" PreviewMouseDown="TextBox_PreviewMouseDown" TextChanged="TextBox_TextChanged" BorderBrush="Peru"  Loaded="TextBox_Loaded"></TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="150" x:Name="col_standart">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Стандарт (ГОСТ)</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_standart, Path=Width}">
+                                    <ComboBox Margin="0,0,12,0" ItemsSource="{Binding StandartList}" SelectedItem="{Binding SelectedStandart}" PreviewMouseDown="ComboBox_PreviewMouseDown"></ComboBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="70" x:Name="col_package">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Толщина пакета, мм</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_package, Path=Width}">
+                                    <TextBox Margin="0,0,12,0" TextAlignment="Center" KeyDown="TextBox_KeyDown" Text="{Binding Package}" PreviewMouseDown="TextBox_PreviewMouseDown"></TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="80" x:Name="col_kit">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Комплект</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_kit, Path=Width}">
+                                    <ComboBox Margin="0,0,12,0" ItemsSource="{Binding KitList}" SelectedItem="{Binding SelectedKit}" DisplayMemberPath="Name" PreviewMouseDown="ComboBox_PreviewMouseDown"></ComboBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="60" x:Name="col_length">
+                        <GridViewColumnHeader Height="38">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Длина болта</TextBlock>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=col_length, Path=Width}">
+                                    <TextBox Margin="0,0,12,0" TextAlignment="Center" Text="{Binding BoltLength}" IsReadOnly="True" PreviewMouseDown="TextBox_PreviewMouseDown"></TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="3,0,3,3" Height="28">
+            <Button Margin="2" Width="40" Click="Button_Click_Add" ToolTip="Добавить строку">
+                <TextBlock FontWeight="Bold" FontSize="23" Margin="0,-8,0,0" IsHitTestVisible="False">+</TextBlock>
+            </Button>
+            <Button Margin="2" Width="40" Click="Button_Click_Copy" IsEnabled="False">
+                <Image Source="/BoltCalc2;component/images/copy-519.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
+            <Button Margin="2" Width="40" Click="Button_Click_Remove" ToolTip="Удалить строку">
+                <TextBlock FontWeight="Bold" FontSize="22" Margin="0,-7,0,0" IsHitTestVisible="False">×</TextBlock>
+            </Button>
+            <Button Margin="2" Width="40" Click="Button_Click_Up" ToolTip="Переместить вверх">
+                <TextBlock FontWeight="Bold" FontSize="14" IsHitTestVisible="False" FontFamily="Calibri">↑</TextBlock>
+            </Button>
+            <Button Margin="2" Width="40" Click="Button_Click_Down" ToolTip="Переместить вниз">
+                <TextBlock FontWeight="Bold" FontSize="14" IsHitTestVisible="False" FontFamily="Calibri">↓</TextBlock>
+            </Button>
+        </StackPanel>
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Disabled"  HorizontalScrollBarVisibility="Disabled"  Name="scrollviever_calc">
+            <Grid Height="380" Name="grid_calc">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.24*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.28*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.28*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <GroupBox Grid.Column="0" Margin="2" Header="Общие параметры соединения" Name="groupBox_main" BorderBrush="Gray">
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="60"></ColumnDefinition>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="3">Вид болтового соединения:</TextBlock>
+                        <ComboBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Margin="3" ItemsSource="{Binding ConnectionTypes}" SelectedItem="{Binding SelectedConnectionType}" DisplayMemberPath="Name" SelectionChanged="ComboBox_SelectionChanged"></ComboBox>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Margin="3,0,3,0" VerticalAlignment="Center">Диаметр болта</TextBlock>
+                        <ComboBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="3" ItemsSource="{Binding BoltList}" SelectedItem="{Binding SelectedBolt}" DisplayMemberPath="Name"></ComboBox>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Margin="3,0,3,0" VerticalAlignment="Center">Количество болтов</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="3" Margin="3,5,3,5" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding BoltQuantity}" KeyDown="TextBox_KeyDown" BorderBrush="DodgerBlue"></TextBox>
+                        <StackPanel Grid.Column="2" Grid.Row="3">
+                            <Button Margin="3,5,3,0" Height="16" Click="Button_Click_PlusBoltQuant">
+                                <TextBlock Margin="0,-7,0,0" FontSize="18" IsHitTestVisible="False">+</TextBlock>
+                            </Button>
+                            <Button Margin="3,0,3,5" Height="16" Click="Button_Click_MinusBoltQuant">
+                                <TextBlock Margin="0,-10,0,0" FontSize="20" IsHitTestVisible="False">-</TextBlock>
+                            </Button>
+                        </StackPanel>
+                        <TextBlock Grid.Column="0" Grid.Row="4" Margin="3,0,3,0" VerticalAlignment="Center">Класс прочности болта</TextBlock>
+                        <ComboBox Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2"  Margin="3" ItemsSource="{Binding StrengthClassList}" SelectedItem="{Binding SelectedStrengthClass}" DisplayMemberPath="Name"></ComboBox>
+                        <TextBlock Grid.Column="0" Grid.Row="5" Margin="3,0,3,0" VerticalAlignment="Center">Нагрузка, кН</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2"  Height="25" Margin="3" VerticalContentAlignment="Center" TextAlignment="Center" Text="{Binding Force}" BorderBrush="DodgerBlue" KeyDown="TextBox_KeyDown"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="6" Margin="3,0,3,0" VerticalAlignment="Center">Стандарт</TextBlock>
+                        <ComboBox Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3"  Margin="3" ItemsSource="{Binding StandartList}" SelectedItem="{Binding SelectedStandart}" Width="200" HorizontalAlignment="Right"></ComboBox>
+                        <CheckBox Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" Margin="3,5,3,3" Name="cb_over2" Visibility="Collapsed" IsChecked="{Binding Over2Det}" Checked="Cb_over2_Checked" Unchecked="Cb_over2_Unchecked">В пакете соединения больше 2-х деталей</CheckBox>
+                        <TextBlock Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="3" Margin="3" TextWrapping="Wrap" Text="{Binding SelectedConnectionType}" VerticalAlignment="Bottom" Foreground="Gray"></TextBlock>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Grid.Column="1" Margin="2" Header="Параметры комплекта" Name="groupBox_kit" BorderBrush="Gray">
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="50"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Margin="3,1,3,1">Толщина пакета, мм</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="0" Margin="3,1,3,1" Name="tp_package" TextAlignment="Center" Text="{Binding Package}" BorderBrush="DodgerBlue" KeyDown="TextBox_KeyDown"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Margin="3,1,3,1" Name="tb_ext" Visibility="Collapsed">Толщина крайней детали, мм</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="1" Margin="3,1,3,1" Name="tbx_ext" Visibility="Collapsed" VerticalAlignment="Center" TextAlignment="Center" Text="{Binding Package}" BorderBrush="DodgerBlue" KeyDown="TextBox_KeyDown"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Margin="3,1,3,1">Количество гаек</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="2" Margin="3,1,3,1" TextAlignment="Center" IsReadOnly="True" Text="{Binding CountNuts}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Margin="3,1,3,1" TextWrapping="Wrap">Шайба со стороны головки</TextBlock>
+                        <CheckBox Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" IsChecked="{Binding LeftWashersExistence}"></CheckBox>
+                        <TextBlock Grid.Column="0" Grid.Row="4" Margin="3,1,3,1" TextWrapping="Wrap">Шайба со стороны гайки</TextBlock>
+                        <CheckBox Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" IsChecked="{Binding RightWashersExistence}"></CheckBox>
+                        <TextBlock Grid.Column="0" Grid.Row="5" Margin="3,1,3,1" TextWrapping="Wrap">Пружинная шайба</TextBlock>
+                        <CheckBox Grid.Column="1" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" IsChecked="{Binding GroverExistence}"></CheckBox>
+                        <TextBlock Grid.Column="0" Grid.Row="6" Margin="3,1,3,1">Высота гайки, мм:</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="6" Margin="3,1,3,1" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding NutHeight}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="7" Margin="3,1,3,1">Высота шайбы, мм:</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="7" Margin="3,1,3,1" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding WasherHeight}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="8" Margin="3,1,3,1">Высота пружинной шайбы, мм:</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="8" Margin="3,1,3,1" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding GroverWashersHeight}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="9" Margin="3,1,3,1">Длина болта, мм:</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="9" Margin="3,1,3,1" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding BoltLength}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="10" Margin="3,1,3,1">Длина резьбы, мм:</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="10" Margin="3,1,3,1" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding ThreadLength}"></TextBox>
+
+                        <TextBlock Grid.Column="0" Grid.Row="13" Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="3,5,3,5">
+                            <Run Foreground="Brown">Не все требования по длине болта и резьбы выполнены. </Run>
+                            <Hyperlink Click="Hyperlink_Click">Подробнее...</Hyperlink>
+                        </TextBlock>
+                        <CheckBox Grid.Column="0" Grid.Row="14" Grid.ColumnSpan="2" Margin="3" BorderBrush="DodgerBlue" IsChecked="{Binding AutoLength}" Checked="CheckBox_AutoLength_Checked" Unchecked="CheckBox_AutoLength_Unchecked" DataContextChanged="CheckBox_DataContextChanged">Длина болта автоматически</CheckBox>
+                        <Grid Grid.Column="0" Grid.Row="15" Grid.ColumnSpan="2" Height="38" Name="grid_button_length" IsEnabled="False">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Margin="2,2,4,2" Click="Button_Click_UpLength">
+                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center">Увеличить длину болта</TextBlock>
+                            </Button>
+                            <Button Grid.Column="1" Margin="4,2,2,2" Click="Button_Click_DownLength">
+                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center">Уменьшить длину болта</TextBlock>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Grid.Column="2" Header="Расчет на срез" Margin="2" Name="groupBox_slice" BorderBrush="Gray" Visibility="Collapsed">
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="60"></ColumnDefinition>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" TextAlignment="Center" FontStyle="Italic" Foreground="DodgerBlue" FontSize="14">Исходные данные</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Margin="3" VerticalAlignment="Center" TextWrapping="Wrap">Площадь сечения стержня болта (брутто), Ab</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="1" Margin="3" Height="25" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding AreaAb}"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="1" Margin="3" VerticalAlignment="Center">см²</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Margin="3" VerticalAlignment="Center" TextWrapping="Wrap">Расчетное сопротивление срезу одноболтового соединения, Rbs</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="2" Margin="3" Height="25" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding R_bs}"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="2" Margin="3" VerticalAlignment="Center">Н/мм²</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Margin="3" VerticalAlignment="Center" TextWrapping="Wrap">Число расчетных срезов</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="3" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding QuantitySlices}" KeyDown="TextBox_KeyDown" BorderBrush="DodgerBlue"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="4" Margin="3" VerticalAlignment="Center" TextWrapping="Wrap">Коэффициент условий работы конструкций γс</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="4" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding GammaC}" KeyDown="TextBox_KeyDown" BorderBrush="DodgerBlue"></TextBox>
+                        <Button Grid.Column="2" Grid.Row="4" Margin="3,3,8,3" FontSize="16" FontFamily="Calibry" Height="25" Click="Button_Click_Open_GammaC_Window" ToolTip="Открыть окно выбора γс">≡</Button>
+                        <TextBlock Grid.Column="0" Grid.Row="5" Margin="3" TextWrapping="Wrap">Коэффициент условий работы болтового соединения γb при расчете на срез</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="5" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding GammaBs}" KeyDown="TextBox_KeyDown" BorderBrush="DodgerBlue"></TextBox>
+                        <Button Grid.Column="2" Grid.Row="5" Margin="3,3,8,3" FontSize="16" FontFamily="Calibry" Height="25" Click="Button_Click_Open_GammaB_Window" ToolTip="Открыть окно расчета γb">≡</Button>
+                        <TextBlock Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" TextAlignment="Center" FontStyle="Italic" FontSize="14" Foreground="Peru">Результат</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="8" Margin="3" VerticalAlignment="Center">Несущая способность</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="8" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding ForceLimitForSlice}" IsReadOnly="True" BorderBrush="Peru"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="8" Margin="3" VerticalAlignment="Center">кН</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="9" Margin="3" VerticalAlignment="Center">Коэффициент использования</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="9" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding UtilRateForSlice}" IsReadOnly="True" BorderBrush="Peru" TextChanged="TextBox_TextChanged"/>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Grid.Column="3" Margin="2" Header="Расчет на смятие" Name="groupBox_crumple" BorderBrush="Gray" Visibility="Collapsed">
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="60"></ColumnDefinition>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" TextAlignment="Center" FontStyle="Italic" Foreground="DodgerBlue" FontSize="14">Исходные данные</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Margin="3" VerticalAlignment="Center"> Класс точности болтов</TextBlock>
+                        <ComboBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Margin="3" ItemsSource="{Binding PrecisionClasses}" SelectedItem="{Binding SelectedPrecisionClass}" SelectionChanged="ComboBox_SelectionChanged_1"></ComboBox>
+                        <TextBlock Grid.Column="0" Grid.Row="2" TextWrapping="Wrap" Margin="3">Толщина меньшей соединяемой детали (или наименьшая сумма толщин в одном направлении)</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="2" Height="25" Margin="3" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding DetailThickness}" KeyDown="TextBox_KeyDown" BorderBrush="DodgerBlue"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Margin="3">мм</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Margin="3" TextWrapping="Wrap">Марка стали соединяемой детали, проверяемой на смятие</TextBlock>
+                        <ComboBox Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="3" ItemsSource="{Binding SteelMarkList}" SelectedItem="{Binding SelectedSteelMark}" DisplayMemberPath="Name"></ComboBox>
+                        <TextBlock Grid.Column="0" Grid.Row="4" TextWrapping="Wrap" Margin="3">Расчетное сопротивление смятию одноболтового соединения, Rbp</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="4" Height="25" Margin="3" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding R_bp}" IsReadOnly="True"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" Margin="3">Н/мм²</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="5" Margin="3" VerticalAlignment="Center" TextWrapping="Wrap">Коэффициент условий работы конструкций γс</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="5" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding GammaC}" KeyDown="TextBox_KeyDown" BorderBrush="DodgerBlue"></TextBox>
+                        <Button Grid.Column="2" Grid.Row="5" Margin="3,3,8,3" FontSize="16" FontFamily="Calibry" Height="25" Click="Button_Click_Open_GammaC_Window" ToolTip="Открыть окно выбора γс">≡</Button>
+                        <TextBlock Grid.Column="0" Grid.Row="6" Margin="3" TextWrapping="Wrap">Коэффициент условий работы болтового соединения γb при расчете на смятие</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="6" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding GammaBm}" KeyDown="TextBox_KeyDown" BorderBrush="DodgerBlue"></TextBox>
+                        <Button Grid.Column="2" Grid.Row="6" Margin="3,3,8,3" FontSize="16" FontFamily="Calibry" Height="25" Click="Button_Click_Open_GammaB_Window" ToolTip="Открыть окно расчета γb">≡</Button>
+                        <TextBlock Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="3" TextAlignment="Center" FontStyle="Italic" Foreground="Peru" FontSize="14">Результат</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="9" Margin="3" VerticalAlignment="Center">Несущая способность</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="9" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding ForceLimitForCrumple}" IsReadOnly="True" BorderBrush="Peru"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="9" Margin="3" VerticalAlignment="Center">кН</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="10" Margin="3" VerticalAlignment="Center">Коэффициент использования</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="10" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding UtilRateForCrumple}" IsReadOnly="True" BorderBrush="Peru" TextChanged="TextBox_TextChanged"></TextBox>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Grid.Column="2" Grid.ColumnSpan="2" Margin="2" Header="Расчет на растяжение" Name="groupBox_tension" BorderBrush="Gray" Visibility="Collapsed">
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MaxWidth="550"></ColumnDefinition>
+                            <ColumnDefinition Width="60"></ColumnDefinition>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                            <ColumnDefinition Width="150"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" TextAlignment="Center" FontStyle="Italic" Foreground="DodgerBlue" FontSize="14">Исходные данные</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Margin="3" VerticalAlignment="Center" TextWrapping="Wrap">Площадь сечения стержня болта по резьбовой части (нетто), Abn</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="1" Margin="3" Height="25" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding AreaAbn}"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="1" Margin="3" VerticalAlignment="Center">см²</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Margin="3" VerticalAlignment="Center" TextWrapping="Wrap">Расчетное сопротивление растяжению одноболтового соединения, Rbt</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="2" Margin="3" Height="25" VerticalContentAlignment="Center" TextAlignment="Center" IsReadOnly="True" Text="{Binding R_bt}"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="2" Margin="3" VerticalAlignment="Center">Н/мм²</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Margin="3" VerticalAlignment="Center" TextWrapping="Wrap">Коэффициент условий работы конструкций γс</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="3" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding GammaC}" KeyDown="TextBox_KeyDown" BorderBrush="DodgerBlue"></TextBox>
+                        <Button Grid.Column="2" Grid.Row="3" Margin="3,3,8,3" FontSize="16" FontFamily="Calibry" Height="25" Click="Button_Click_Open_GammaC_Window" ToolTip="Открыть окно выбора γс">≡</Button>
+                        <TextBlock Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" TextAlignment="Center" FontStyle="Italic" Foreground="Peru" FontSize="14">Результат</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="6" Margin="3" VerticalAlignment="Center">Несущая способность</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="6" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding ForceLimitForTension}" IsReadOnly="True" BorderBrush="Peru"></TextBox>
+                        <TextBlock Grid.Column="2" Grid.Row="6" Margin="3" VerticalAlignment="Center">кН</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="7" Margin="3" VerticalAlignment="Center">Коэффициент использования</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="7" Margin="3" Height="25" TextAlignment="Center" VerticalContentAlignment="Center" Text="{Binding UtilRateForTension}" IsReadOnly="True" BorderBrush="Peru" TextChanged="TextBox_TextChanged"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

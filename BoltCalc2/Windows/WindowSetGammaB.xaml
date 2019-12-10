@@ -1,0 +1,88 @@
+﻿<Window x:Class="BoltCalc2.WindowSetGammaB"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BoltCalc2"
+        mc:Ignorable="d"
+        Title="WindowSetGammaB" Height="450" Width="800" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Header="Исходные данные" Margin="5,0,5,5">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <StackPanel Orientation="Horizontal" Margin="5,10,5,5">
+                    <Grid Margin="0,0,50,0" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
+                            <ColumnDefinition Width="60"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Margin="3">Диаметр болта, мм</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="0" Margin="3" IsReadOnly="True" TextAlignment="Center" Text="{Binding DiameterBolt}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Margin="3">Многоболтовое соединение</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="1" Margin="3" IsReadOnly="True" TextAlignment="Center" Text="{Binding TbMultiBolt}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Margin="3">Высокопрочный болт</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="2" Margin="3" IsReadOnly="True" TextAlignment="Center" Text="{Binding TbHighStrengthBolt}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Margin="3">Класс точности болта</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="3" Margin="3" IsReadOnly="True" TextAlignment="Center" Text="{Binding PrecisionClass}"></TextBox>
+                        <TextBlock Grid.Column="0" Grid.Row="4" Margin="3" TextWrapping="Wrap">Предел текучести стали соединяемых деталей Ryn, Н/мм²</TextBlock>
+                        <TextBox Grid.Column="1" Grid.Row="4" Margin="3" IsReadOnly="True" TextAlignment="Center" Text="{Binding R_yn}" Height="18"></TextBox>
+                    </Grid>
+                    <Grid VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                            <ColumnDefinition Width="50"></ColumnDefinition>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Margin="3">Диаметр отверстия для болта</TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Margin="3" TextAlignment="Right">d =</TextBlock>
+                        <TextBox Grid.Column="2" Grid.Row="0" Margin="3" TextAlignment="Center" BorderBrush="DodgerBlue"  Text="{Binding D}" KeyDown="TextBox_KeyDown"></TextBox>
+                        <TextBlock Grid.Column="3" Grid.Row="0" Margin="3">мм</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Margin="3" TextWrapping="Wrap">Расстояние вдоль усилия от края элемента до центра ближайшего отверстия</TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Margin="3" TextAlignment="Right" VerticalAlignment="Center">a =</TextBlock>
+                        <TextBox Grid.Column="2" Grid.Row="1" Margin="3" VerticalAlignment="Center"  TextAlignment="Center" BorderBrush="DodgerBlue" Text="{Binding A}" KeyDown="TextBox_KeyDown"></TextBox>
+                        <TextBlock Grid.Column="3" Grid.Row="1" Margin="3" VerticalAlignment="Center">мм</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Margin="3" TextWrapping="Wrap">Расстояние вдоль усилия между центрами отверстий</TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Margin="3" TextAlignment="Right" VerticalAlignment="Center">s =</TextBlock>
+                        <TextBox Grid.Column="2" Grid.Row="2" Margin="3" VerticalAlignment="Center"  TextAlignment="Center" BorderBrush="DodgerBlue" Text="{Binding S}" KeyDown="TextBox_KeyDown" Name="tbS"></TextBox>
+                        <TextBlock Grid.Column="3" Grid.Row="2" Margin="3" VerticalAlignment="Center">мм</TextBlock>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Margin="5,0,5,5" Header="Расчет">
+            <FlowDocumentScrollViewer VerticalScrollBarVisibility="Auto" Margin="5" Document="{Binding DocGammaB}">
+            </FlowDocumentScrollViewer>
+        </GroupBox>
+        <StackPanel Grid.Row="1" Margin="5,0,5,0" Orientation="Horizontal">
+            <Button Width="150" Margin="5" Click="Button_Click_Open_Table" Name="bt1">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">Таблица 40 СП16.13330.2016</TextBlock>
+            </Button>
+            <Button Width="150" Margin="5" Click="Button_Click_Open_Table" Name="bt2">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">Таблица 41 СП16.13330.2016</TextBlock>
+            </Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="5,0,5,5">
+            <Button Width="100" Height="25" Margin="5" Click="Button_Click_Cancel">Отмена</Button>
+            <Button Width="100" Height="25" Margin="5" Click="Button_Click_Apply" IsEnabled="{Binding IsApplicable}">Применить</Button>
+        </StackPanel>
+    </Grid>
+</Window>

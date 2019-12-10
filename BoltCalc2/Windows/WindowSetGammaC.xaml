@@ -1,0 +1,37 @@
+﻿<Window x:Class="BoltCalc2.WindowSetGammaC"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BoltCalc2"
+        mc:Ignorable="d"
+        Title="WindowSetGammaC" Height="580" Width="900" Closing="Window_Closing">
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5,0,5,5" FlowDirection="RightToLeft">
+            <Button Width="150" Height="25" Margin="5" Click="Button_Click">Применить и закрыть</Button>
+        </StackPanel>
+        <GroupBox Header="Назначение коэффициента γс" Margin="5,0,5,5" Name="gb1">
+            <ListBox Margin="0,5,0,0"  ItemsSource="{Binding ListGammaC}" SelectedItem="{Binding ItemGammaC}" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                <ColumnDefinition Name="cd1"></ColumnDefinition>
+                                <ColumnDefinition Width="60"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" IsHitTestVisible="False"></CheckBox>
+                            <TextBlock Grid.Column="1" Margin="5,0,0,0" TextWrapping="Wrap" Text="{Binding Description}"></TextBlock>
+                            <TextBlock Grid.Column="2" TextAlignment="Center" FontWeight="Bold" Text="{Binding Value}"></TextBlock>
+                        </Grid>
+                        <!--<StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding IsSelected}"></CheckBox>
+                            <TextBlock Width="{Binding ElementName=gb1, Path=Width}" Margin="5,0,0,0" TextWrapping="Wrap" Text="{Binding Description}"></TextBlock>
+                            <TextBlock Width="60" TextAlignment="Center" FontWeight="Bold" Text="{Binding Value}"></TextBlock>
+                        </StackPanel>-->
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </GroupBox>
+    </DockPanel>
+</Window>

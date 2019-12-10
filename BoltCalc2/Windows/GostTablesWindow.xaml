@@ -1,0 +1,192 @@
+﻿<Window x:Class="BoltCalc2.GostTablesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BoltCalc2"
+        mc:Ignorable="d"
+        Title="GostTablesWindow" Height="700" Width="1000" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Window.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="Margin" Value="3"></Setter>
+            <Setter Property="HeadersVisibility" Value="Column"></Setter>
+            <Setter Property="CanUserSortColumns" Value="False"></Setter>
+            <Setter Property="CanUserReorderColumns" Value="False"></Setter>
+            <Setter Property="CanUserAddRows" Value="False"></Setter>
+            <Setter Property="CanUserDeleteRows" Value="False"></Setter>
+            <EventSetter Event="GotFocus" Handler="Data_grid_GotFocus"></EventSetter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="0" Margin="7">
+            <TabItem Padding="2">
+                <TabItem.Header>
+                    <TextBlock TextWrapping="Wrap" Width="150" TextAlignment="Center">Болты по ГОСТ 7798-70</TextBlock>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                        <StackPanel>
+                            <Expander Header="Конструктивные параметры болтов" Margin="3" IsExpanded="False">
+                                <DataGrid Name="table1_1" AutoGenerateColumns="False" PreparingCellForEdit="DataGrid_PreparingCellForEdit">
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Вставить" Click="MenuItem_Click"></MenuItem>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding Bolt}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Номинальный диаметр резьбы</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding Diameter}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Диаметр стержня болта, мм</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding TurnkeySize}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Размер "под ключ", мм</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding HeadHeight}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Высота головки, мм</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding ThreadPitch}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Шаг резьбы, мм</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Expander>
+                            <Expander Header="Длина резьбы" Margin="3">
+                                <DataGrid Name="table1_2" PreparingCellForEdit="DataGrid_PreparingCellForEdit" MinColumnWidth="50">
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Вставить" Click="MenuItem_Click"></MenuItem>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
+                                </DataGrid>
+                            </Expander>
+                            <Expander Header="Масса болтов" Margin="3">
+                                <DataGrid Name="table1_3" PreparingCellForEdit="DataGrid_PreparingCellForEdit" MinColumnWidth="50">
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Вставить" Click="MenuItem_Click"></MenuItem>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
+                                </DataGrid>
+                            </Expander>
+                            <Expander Header="Гайки по ГОСТ 5915-70" Margin="3">
+                                <DataGrid Name="table1_4" PreparingCellForEdit="DataGrid_PreparingCellForEdit" AutoGenerateColumns="False">
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Вставить" Click="MenuItem_Click"></MenuItem>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding Thread}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="130">Номинальный диаметр резьбы</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding Height}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Высота, мм</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding Weight}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Масса 1000 шт., кг</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Expander>
+                            <Expander Header="Шайбы по ГОСТ 11371-78" Margin="3">
+                                <DataGrid Name="table1_5" PreparingCellForEdit="DataGrid_PreparingCellForEdit" AutoGenerateColumns="False">
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Вставить" Click="MenuItem_Click"></MenuItem>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding Thread}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="130">Номинальный диаметр резьбы болта</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding Height}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Высота, мм</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding Weight}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Масса 1000 шт., кг</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Expander>
+                            <Expander Header="Шайбы пружинные по ГОСТ 6402-70" Margin="3">
+                                <DataGrid Name="table1_6" PreparingCellForEdit="DataGrid_PreparingCellForEdit" AutoGenerateColumns="False">
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Вставить" Click="MenuItem_Click"></MenuItem>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding Thread}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="130">Номинальный диаметр резьбы болта</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding Height}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Высота, мм</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding Weight}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="100">Масса 1000 шт., кг</TextBlock>
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <TextBlock Grid.Row="1" Margin="2" TextWrapping="Wrap" Foreground="Gray">"-1" в таблицах означает, что такого болта не существует. Значение длины резьбы "0" соответствует болту с резьбой по всей длине стержня.</TextBlock>
+                </Grid>
+               
+            </TabItem>
+            <TabItem Padding="2">
+                <TabItem.Header>
+                    <TextBlock TextWrapping="Wrap" Width="150" TextAlignment="Center">ГОСТ [какой-то другой]</TextBlock>
+                </TabItem.Header>
+                <DataGrid Margin="3" Name="data_grid2" HeadersVisibility="Column" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" GotFocus="Data_grid_GotFocus"></DataGrid>
+            </TabItem>
+        </TabControl>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
+            <Button Margin="2" Width="30" FontWeight="Bold" FontSize="16" Content="+" Click="Button_Click_Add" FontFamily="Calibri"/>
+            <Button Margin="2" Width="30" FontWeight="Bold" FontSize="16" Content="-" Click="Button_Click_Remove" FontFamily="Calibri"/>
+            <Button Margin="2" Width="30" FontWeight="Bold" FontSize="14" Content="↑" Click="Button_Click_Up" FontFamily="Calibri"/>
+            <Button Margin="2" Width="30" FontWeight="Bold" FontSize="14" Content="↓" Click="Button_Click_Down" FontFamily="Calibri"/>
+            <Button Margin="2" Width="120" Click="Button_Click_Create">Создать таблицу</Button>
+            <Button Margin="2" Width="120" Click="Button_Click">Добавить столбец</Button>
+            <!--<Button Margin="2" Width="120" Click="Button_Click_Delete" IsEnabled="False">Удалить таблицу</Button>-->
+        </StackPanel>
+    </Grid>
+</Window>
